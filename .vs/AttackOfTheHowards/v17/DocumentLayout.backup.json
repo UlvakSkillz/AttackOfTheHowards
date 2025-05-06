@@ -1,0 +1,70 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\austi\\source\\repos\\AttackOfTheHowards\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{492D2168-D714-4139-8927-41E7B564DA94}|AttackOfTheHowards\\AttackOfTheHowards.csproj|c:\\users\\austi\\source\\repos\\attackofthehowards\\attackofthehowards\\main.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{492D2168-D714-4139-8927-41E7B564DA94}|AttackOfTheHowards\\AttackOfTheHowards.csproj|solutionrelative:attackofthehowards\\main.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{492D2168-D714-4139-8927-41E7B564DA94}|AttackOfTheHowards\\AttackOfTheHowards.csproj|c:\\users\\austi\\source\\repos\\attackofthehowards\\attackofthehowards\\howardcombat.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{492D2168-D714-4139-8927-41E7B564DA94}|AttackOfTheHowards\\AttackOfTheHowards.csproj|solutionrelative:attackofthehowards\\howardcombat.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{492D2168-D714-4139-8927-41E7B564DA94}|AttackOfTheHowards\\AttackOfTheHowards.csproj|c:\\users\\austi\\source\\repos\\attackofthehowards\\attackofthehowards\\assemblyinfo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{492D2168-D714-4139-8927-41E7B564DA94}|AttackOfTheHowards\\AttackOfTheHowards.csproj|solutionrelative:attackofthehowards\\assemblyinfo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 2,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "AssemblyInfo.cs",
+              "DocumentMoniker": "C:\\Users\\austi\\source\\repos\\AttackOfTheHowards\\AttackOfTheHowards\\AssemblyInfo.cs",
+              "RelativeDocumentMoniker": "AttackOfTheHowards\\AssemblyInfo.cs",
+              "ToolTip": "C:\\Users\\austi\\source\\repos\\AttackOfTheHowards\\AttackOfTheHowards\\AssemblyInfo.cs",
+              "RelativeToolTip": "AttackOfTheHowards\\AssemblyInfo.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-03T02:30:13.027Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "HowardCombat.cs",
+              "DocumentMoniker": "C:\\Users\\austi\\source\\repos\\AttackOfTheHowards\\AttackOfTheHowards\\HowardCombat.cs",
+              "RelativeDocumentMoniker": "AttackOfTheHowards\\HowardCombat.cs",
+              "ToolTip": "C:\\Users\\austi\\source\\repos\\AttackOfTheHowards\\AttackOfTheHowards\\HowardCombat.cs",
+              "RelativeToolTip": "AttackOfTheHowards\\HowardCombat.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQBAAAuAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-03T04:36:54.556Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Main.cs",
+              "DocumentMoniker": "C:\\Users\\austi\\source\\repos\\AttackOfTheHowards\\AttackOfTheHowards\\Main.cs",
+              "RelativeDocumentMoniker": "AttackOfTheHowards\\Main.cs",
+              "ToolTip": "C:\\Users\\austi\\source\\repos\\AttackOfTheHowards\\AttackOfTheHowards\\Main.cs",
+              "RelativeToolTip": "AttackOfTheHowards\\Main.cs",
+              "ViewState": "AgIAAH8AAAAAAAAAAAAWwJkAAAAXAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-03T02:27:51.302Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
