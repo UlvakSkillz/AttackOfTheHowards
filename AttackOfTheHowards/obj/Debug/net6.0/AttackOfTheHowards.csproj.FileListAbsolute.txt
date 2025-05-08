@@ -98,3 +98,4 @@ C:\Users\austi\source\repos\AttackOfTheHowards\AttackOfTheHowards\obj\Debug\net6
 C:\Users\austi\source\repos\AttackOfTheHowards\AttackOfTheHowards\obj\Debug\net6.0\refint\AttackOfTheHowards.dll
 C:\Users\austi\source\repos\AttackOfTheHowards\AttackOfTheHowards\obj\Debug\net6.0\AttackOfTheHowards.pdb
 C:\Users\austi\source\repos\AttackOfTheHowards\AttackOfTheHowards\obj\Debug\net6.0\ref\AttackOfTheHowards.dll
+C:\Users\austi\source\repos\AttackOfTheHowards\AttackOfTheHowards\obj\Debug\net6.0\AttackOfTheHowards.sourcelink.json

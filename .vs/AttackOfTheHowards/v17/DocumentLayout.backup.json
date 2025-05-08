@@ -34,7 +34,8 @@
               "RelativeToolTip": "AttackOfTheHowards\\AssemblyInfo.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-03T02:30:13.027Z"
+              "WhenOpened": "2025-05-03T02:30:13.027Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -44,7 +45,7 @@
               "RelativeDocumentMoniker": "AttackOfTheHowards\\HowardCombat.cs",
               "ToolTip": "C:\\Users\\austi\\source\\repos\\AttackOfTheHowards\\AttackOfTheHowards\\HowardCombat.cs",
               "RelativeToolTip": "AttackOfTheHowards\\HowardCombat.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQBAAAuAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAmAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-05-03T04:36:54.556Z",
               "EditorCaption": ""
@@ -57,7 +58,7 @@
               "RelativeDocumentMoniker": "AttackOfTheHowards\\Main.cs",
               "ToolTip": "C:\\Users\\austi\\source\\repos\\AttackOfTheHowards\\AttackOfTheHowards\\Main.cs",
               "RelativeToolTip": "AttackOfTheHowards\\Main.cs",
-              "ViewState": "AgIAAH8AAAAAAAAAAAAWwJkAAAAXAAAAAAAAAA==",
+              "ViewState": "AgIAAFkAAAAAAAAAAAAuwGYAAAAWAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-05-03T02:27:51.302Z",
               "EditorCaption": ""

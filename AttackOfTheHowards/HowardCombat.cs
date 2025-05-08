@@ -1,6 +1,5 @@
 ﻿using Il2CppRUMBLE.Environment.Howard;
 using Il2CppRUMBLE.Managers;
-using Il2CppRUMBLE.Players.Subsystems;
 using MelonLoader;
 using System.Collections;
 using UnityEngine;
@@ -17,14 +16,15 @@ namespace AttackOfTheHowards
         private HowardAnimator thisHowardAnimator;
         private GameObject thisDummy;
         private float moveSpeed = 5f;
-        private float turnSpeed = 3.6f;
+        private float turnSpeed = 7.2f;
         private float attackDistance = 20;
         private float stopMovingCloserDistance = 3;
-        public int mode = 0; //0 = idle, 1 = move, 2 = attack, 3 = death
+        public int mode = 0; //0 = idle, 1 = move, 2 = attack, 3 = death, 4 = sideStep
         private bool attacking = false;
         private List<Attack> attacks = new List<Attack>();
         private bool attackRunning = false;
-        private float lastKnownAngleToPlayer;
+        private bool initDone = false;
+        private float lastAngleToPlayer = 0;
 
         private class Attack
         {
@@ -66,12 +66,11 @@ namespace AttackOfTheHowards
                 thisHowardComponent.SetHowardLogicActive(true);
             }
             catch { yield break; }
-            yield return new WaitForSeconds(3.5f);
+            yield return new WaitForSeconds(4f);
             try
             {
-                Transform dummy = thisHowardAnimator.gameObject.transform.parent;
-                dummy.localPosition = Vector3.zero;
                 thisHoward.transform.position = new Vector3(thisHoward.transform.position.x, 0, thisHoward.transform.position.z);
+                initDone = true;
             }
             catch { yield break; }
             yield break;
@@ -81,35 +80,99 @@ namespace AttackOfTheHowards
         {
             if (Main.availableStacks[0] != null)
             {
-                attacks.Add(new Attack("d", 5, 10, CastDisc()));
+                attacks.Add(new Attack("d", 0, 10, CastDisc()));
+            }
+            else
+            {
+                Main.Log($"Disk: {Main.availableStacks[0] != null}");
             }
             if ((Main.availableStacks[0] != null) && (Main.availableStacks[5] != null))
             {
                 attacks.Add(new Attack("dS", 7, 20, CastDiscStraight()));
             }
+            else
+            {
+                Main.Log($"Disk: {Main.availableStacks[0] != null} Straight: {Main.availableStacks[5] != null}");
+            }
+            if ((Main.availableStacks[1] != null) && (Main.availableStacks[5] != null))
+            {
+                attacks.Add(new Attack("pS", 0, 6, CastPillarStraight()));
+            }
+            else
+            {
+                Main.Log($"Pillar: {Main.availableStacks[1] != null} Straight: {Main.availableStacks[5] != null}");
+            }
+            if ((Main.availableStacks[1] != null) && (Main.availableStacks[5] != null) && (Main.availableStacks[6] != null))
+            {
+                attacks.Add(new Attack("pSU", 0, 8, CastPillarStraightUppercut()));
+            }
+            else
+            {
+                Main.Log($"Pillar: {Main.availableStacks[1] != null} Straight: {Main.availableStacks[5] != null} Uppercut: {Main.availableStacks[6] != null}");
+            }
             if ((Main.availableStacks[1] != null) && (Main.availableStacks[5] != null) && (Main.availableStacks[6] != null))
             {
                 attacks.Add(new Attack("ppSSU", 8, 10, CastPillarPillarStraightStraightUppercut()));
+            }
+            else
+            {
+                Main.Log($"Pillar: {Main.availableStacks[1] != null} Straight: {Main.availableStacks[5] != null} Uppercut: {Main.availableStacks[6] != null}");
             }
             if ((Main.availableStacks[2] != null) && (Main.availableStacks[5] != null))
             {
                 attacks.Add(new Attack("bS", 2, 10, CastBallStraight()));
             }
+            else
+            {
+                Main.Log($"Ball: {Main.availableStacks[2] != null} Straight: {Main.availableStacks[5] != null}");
+            }
+            if ((Main.availableStacks[2] != null) && (Main.availableStacks[6] != null) && (Main.availableStacks[5] != null))
+            {
+                attacks.Add(new Attack("bUS", 5, 14, CastBallUppercutStraight()));
+            }
+            else
+            {
+                Main.Log($"Ball: {Main.availableStacks[2] != null} Uppercut: {Main.availableStacks[6] != null} Straight: {Main.availableStacks[5] != null}");
+            }
             if ((Main.availableStacks[3] != null) && (Main.availableStacks[5] != null) && (Main.availableStacks[6] != null))
             {
                 attacks.Add(new Attack("cSU", 0, 15, CastCubeStraightUppercut()));
+            }
+            else
+            {
+                Main.Log($"Cube: {Main.availableStacks[3] != null} Straight: {Main.availableStacks[5] != null} Uppercut: {Main.availableStacks[6] != null}");
+            }
+            if ((Main.availableStacks[3] != null) && (Main.availableStacks[6] != null) && (Main.availableStacks[5] != null))
+            {
+                attacks.Add(new Attack("cSU", 0, 10, CastCubeUppercutStraight()));
+            }
+            else
+            {
+                Main.Log($"Cube: {Main.availableStacks[3] != null} Straight: {Main.availableStacks[5] != null} Uppercut: {Main.availableStacks[6] != null}");
             }
             if ((Main.availableStacks[4] != null) && (Main.availableStacks[5] != null))
             {
                 attacks.Add(new Attack("wS", 0, 4, CastWallStraight()));
             }
+            else
+            {
+                Main.Log($"Wall: {Main.availableStacks[4] != null} Straight: {Main.availableStacks[5] != null}");
+            }
             if ((Main.availableStacks[4] != null) && (Main.availableStacks[5] != null) && (Main.availableStacks[7] != null))
             {
                 attacks.Add(new Attack("wSU", 4, 8, CastWallStraightUppercut()));
             }
+            else
+            {
+                Main.Log($"Wall: {Main.availableStacks[4] != null} Straight: {Main.availableStacks[5] != null} Uppercut: {Main.availableStacks[6] != null}");
+            }
             if ((Main.availableStacks[4] != null) && (Main.availableStacks[5] != null) && (Main.availableStacks[6] != null) && (Main.availableStacks[7] != null))
             {
                 attacks.Add(new Attack("wSUK", 10, 15, CastWallStraightUppercutKick()));
+            }
+            else
+            {
+                Main.Log($"Wall: {Main.availableStacks[4] != null} Straight: {Main.availableStacks[5] != null} Uppercut: {Main.availableStacks[6] != null} Kick: {Main.availableStacks[7] != null}");
             }
         }
 
@@ -117,52 +180,93 @@ namespace AttackOfTheHowards
         {
             while ((thisHoward != null) && (mode != 3))
             {
-                float distanceToPlayer = Vector3.Distance(thisHoward.transform.position, playerHead.transform.position);
-                if (distanceToPlayer > Main.howardVisualDistance)
+                if ((initDone) && (mode != 4))
                 {
-                    mode = 0;
-                }
-                else if (distanceToPlayer <= stopMovingCloserDistance)
-                {
-                    if (lastKnownAngleToPlayer < 5f)
-                    {
-                        mode = 2;
-                    }
-                    else
+                    RaycastCheck();
+                    Vector2 howardXZ = new Vector2(thisDummy.transform.position.x, thisDummy.transform.position.z);
+                    Vector2 playerXZ = new Vector2(playerHead.transform.position.x, playerHead.transform.position.z);
+                    float distanceToPlayer = Vector2.Distance(howardXZ, playerXZ);
+                    if (distanceToPlayer > Main.howardVisualDistance)
                     {
                         mode = 0;
                     }
-                }
-                else if (distanceToPlayer <= attackDistance)
-                {
-                    if (lastKnownAngleToPlayer < 5f)
+                    else if (distanceToPlayer <= stopMovingCloserDistance)
                     {
-                        mode = Main.random.Next(1, 3);
+                        if (lastAngleToPlayer < turnSpeed)
+                        {
+                            mode = 2;
+                        }
+                        else
+                        {
+                            mode = 0;
+                        }
+                    }
+                    else if (distanceToPlayer <= attackDistance)
+                    {
+                        moveSpeed = 3.6f;
+                        if (lastAngleToPlayer < turnSpeed)
+                        {
+                            mode = Main.random.Next(1, 3);
+                        }
+                        else
+                        {
+                            mode = 0;
+                        }
                     }
                     else
                     {
-                        mode = 0;
+                        moveSpeed = 5f;
+                        mode = 1;
                     }
-                }
-                else
-                {
-                    mode = 1;
                 }
                 yield return new WaitForSeconds(0.25f);
             }
             yield break;
         }
 
+        private void RaycastCheck()
+        {
+            if (lastAngleToPlayer > 0) { return; }
+            Vector3 rayStart = thisDummy.transform.position + thisDummy.transform.forward;
+            Vector3 dummy = new Vector3(rayStart.x , rayStart.y + 1.5f, rayStart.z);
+            RaycastHit hit;
+            if (Physics.Raycast(dummy, thisDummy.transform.forward, out hit, Vector3.Distance(dummy, playerHead.transform.position)))
+            {
+                mode = 4;
+                MelonCoroutines.Start(MoveTillSeePlayer());
+            }
+        }
+
+        private IEnumerator MoveTillSeePlayer()
+        {
+            bool dontSeePlayer = true;
+            int moveLeftVsRight = (Main.random.Next(0, 2) == 0 ? -1 : 1);
+            while (dontSeePlayer && (thisHoward != null))
+            {
+                thisHoward.transform.position += thisDummy.transform.right * moveLeftVsRight * moveSpeed * Time.deltaTime / 2;
+                Vector3 rayStart = thisDummy.transform.position + thisDummy.transform.forward;
+                Vector3 dummy = new Vector3(rayStart.x, rayStart.y + 1.5f, rayStart.z);
+                RaycastHit hit;
+                dontSeePlayer = Physics.Raycast(dummy, thisDummy.transform.forward, out hit, Vector3.Distance(dummy, playerHead.transform.position));
+                if (dontSeePlayer)
+                {
+                    try
+                    {
+                        if ((hit.transform.gameObject.name == "Hitboxes") || (hit.transform.gameObject.name.ToLower().Contains("bone")))
+                        {
+                            dontSeePlayer = false;
+                        }
+                    }
+                    catch { }
+                }
+                yield return new WaitForFixedUpdate();
+            }
+            mode = 0;
+            yield break;
+        }
+
         void FixedUpdate()
         {
-            if ((thisHowardComponent.activeLogicRoutine == null) && (thisHowardComponent.activeRegenRoutine == null))
-            {
-                thisHowardComponent.StartCurrentLogicLevel();
-                if ((PlayerManager.instance.localPlayer.Controller.gameObject.transform.position.y < 0.5f) && (PlayerManager.instance.localPlayer.Controller.GetComponent<PlayerMovement>().activeMovementType == PlayerMovement.MovementType.AirealKnockback))
-                {
-                    PlayerManager.instance.localPlayer.Controller.GetComponent<PlayerMovement>().activeMovementType = PlayerMovement.MovementType.Normal;
-                }
-            }
             if (!attacking)
             {
                 UpdateRotation();
@@ -176,7 +280,7 @@ namespace AttackOfTheHowards
                     case 2:
                         MelonCoroutines.Start(StartAttack());
                         break;
-                    case 3:
+                    default:
                         break;
                 }
             }
@@ -189,14 +293,12 @@ namespace AttackOfTheHowards
             Vector2 playerXZ = new Vector2(playerHead.transform.position.x, playerHead.transform.position.z);
             float distance = Vector2.Distance(playerXZ, howardXZ);
             List<Attack> usableAttacks = new List<Attack>();
-            int i = 0;
             foreach (Attack attack in attacks)
             {
                 if (attack.IsWithinRange(distance))
                 {
                     usableAttacks.Add(attack);
                 }
-                i++;
             }
             if (usableAttacks.Count > 0)
             {
@@ -234,10 +336,15 @@ namespace AttackOfTheHowards
                         break;
                 }
             }
-            attacking = false;
+            else
+            {
+                Main.Log($"No Attacks Available Within Range? Distance to Player: {distance}");
+            }
+                attacking = false;
             yield break;
         }
 
+        #region Combos
         private IEnumerator CastDisc()
         {
             //Disc
@@ -282,6 +389,80 @@ namespace AttackOfTheHowards
             }
             catch { attackRunning = false; yield break; }
             yield return new WaitForSeconds(0.3f);
+            attackRunning = false;
+            yield break;
+        }
+
+        private IEnumerator CastPillarStraight()
+        {
+            //Pillar
+            attackRunning = true;
+            try
+            {
+                thisHowardAnimator.SetAnimationTrigger("SpawnStructure");
+            }
+            catch { attackRunning = false; yield break; }
+            yield return new WaitForSeconds(0.2f);
+            try
+            {
+                thisHowardComponent.Execute(Main.availableStacks[1]);
+            }
+            catch { attackRunning = false; yield break; }
+            yield return new WaitForSeconds(0.4f);
+            //Straight
+            try
+            {
+                thisHowardAnimator.SetAnimationTrigger("Straight");
+            }
+            catch { attackRunning = false; yield break; }
+            yield return new WaitForSeconds(0.2f);
+            try
+            {
+                thisHowardComponent.Execute(Main.availableStacks[5]);
+            }
+            catch { attackRunning = false; yield break; }
+            yield return new WaitForSeconds(0.3f);
+            attackRunning = false;
+            yield break;
+        }
+
+        private IEnumerator CastPillarStraightUppercut()
+        {
+            //Pillar
+            attackRunning = true;
+            try
+            {
+                thisHowardAnimator.SetAnimationTrigger("SpawnStructure");
+            }
+            catch { attackRunning = false; yield break; }
+            yield return new WaitForSeconds(0.2f);
+            try
+            {
+                thisHowardComponent.Execute(Main.availableStacks[1]);
+            }
+            catch { attackRunning = false; yield break; }
+            yield return new WaitForSeconds(0.4f);
+            //Straight
+            try
+            {
+                thisHowardAnimator.SetAnimationTrigger("Straight");
+            }
+            catch { attackRunning = false; yield break; }
+            yield return new WaitForSeconds(0.2f);
+            try
+            {
+                thisHowardComponent.Execute(Main.availableStacks[5]);
+            }
+            catch { attackRunning = false; yield break; }
+            yield return new WaitForSeconds(0.2f);
+            //Uppercut
+            try
+            {
+                thisHowardAnimator.SetAnimationTrigger("Straight");
+                thisHowardComponent.Execute(Main.availableStacks[6]);
+            }
+            catch { attackRunning = false; yield break; }
+            yield return new WaitForSeconds(0.2f);
             attackRunning = false;
             yield break;
         }
@@ -387,6 +568,51 @@ namespace AttackOfTheHowards
             yield break;
         }
 
+        private IEnumerator CastBallUppercutStraight()
+        {
+            //Ball
+            attackRunning = true;
+            try
+            {
+                thisHowardAnimator.SetAnimationTrigger("SpawnStructure");
+            }
+            catch { attackRunning = false; yield break; }
+            yield return new WaitForSeconds(0.2f);
+            try
+            {
+                thisHowardComponent.Execute(Main.availableStacks[2]);
+            }
+            catch { attackRunning = false; yield break; }
+            yield return new WaitForSeconds(0.75f);
+            //Uppercut
+            try
+            {
+                thisHowardAnimator.SetAnimationTrigger("Straight");
+            }
+            catch { attackRunning = false; yield break; }
+            yield return new WaitForSeconds(0.2f);
+            try
+            {
+                thisHowardComponent.Execute(Main.availableStacks[6]);
+            }
+            catch { attackRunning = false; yield break; }
+            //Straight
+            try
+            {
+                thisHowardAnimator.SetAnimationTrigger("Straight");
+            }
+            catch { attackRunning = false; yield break; }
+            yield return new WaitForSeconds(0.1f);
+            try
+            {
+                thisHowardComponent.Execute(Main.availableStacks[5]);
+            }
+            catch { attackRunning = false; yield break; }
+            yield return new WaitForSeconds(0.2f);
+            attackRunning = false;
+            yield break;
+        }
+
         private IEnumerator CastCubeStraightUppercut()
         {
             //Cube
@@ -421,6 +647,52 @@ namespace AttackOfTheHowards
             try
             {
                 thisHowardComponent.Execute(Main.availableStacks[6]);
+            }
+            catch { attackRunning = false; yield break; }
+            yield return new WaitForSeconds(0.5f);
+            attackRunning = false;
+            yield break;
+        }
+
+        private IEnumerator CastCubeUppercutStraight()
+        {
+            //Cube
+            attackRunning = true;
+            try
+            {
+                thisHowardAnimator.SetAnimationTrigger("SpawnStructure");
+            }
+            catch { attackRunning = false; yield break; }
+            yield return new WaitForSeconds(0.2f);
+            try
+            {
+                thisHowardComponent.Execute(Main.availableStacks[3]);
+            }
+            catch { attackRunning = false; yield break; }
+            yield return new WaitForSeconds(0.4f);
+            //Uppercut
+            try
+            {
+                thisHowardAnimator.SetAnimationTrigger("Straight");
+            }
+            catch { attackRunning = false; yield break; }
+            yield return new WaitForSeconds(0.2f);
+            try
+            {
+                thisHowardComponent.Execute(Main.availableStacks[6]);
+            }
+            catch { attackRunning = false; yield break; }
+            yield return new WaitForSeconds(0.1f);
+            //Straight
+            try
+            {
+                thisHowardAnimator.SetAnimationTrigger("Straight");
+            }
+            catch { attackRunning = false; yield break; }
+            yield return new WaitForSeconds(0.1f);
+            try
+            {
+                thisHowardComponent.Execute(Main.availableStacks[5]);
             }
             catch { attackRunning = false; yield break; }
             yield return new WaitForSeconds(0.5f);
@@ -541,16 +813,19 @@ namespace AttackOfTheHowards
             attackRunning = false;
             yield break;
         }
+        #endregion
 
         private void UpdateRotation()
         {
             //Grab Vector2 Angle (X/Z) to look at player from current rotation
             Vector3 thisHowardNormalized = thisDummy.transform.forward.normalized;
-            Vector2 forwardVector = new Vector2(thisHowardNormalized.x, thisHowardNormalized.z);
             Vector3 directionNormalized = (playerHead.transform.position - thisDummy.transform.position).normalized;
+            Vector2 forwardVector = new Vector2(thisHowardNormalized.x, thisHowardNormalized.z);
             Vector2 directionToObject = new Vector2(directionNormalized.x, directionNormalized.z);
             float dotProduct = Vector2.Dot(forwardVector, directionToObject);
             float targetAngle = Mathf.Acos(dotProduct) * Mathf.Rad2Deg; // Convert radians to degrees
+            targetAngle = Math.Abs(thisDummy.transform.rotation.eulerAngles.y - (Mathf.Atan2((playerHead.transform.position - thisDummy.transform.position).x, (playerHead.transform.position - thisDummy.transform.position).z) * 180 / Mathf.PI));
+            if (targetAngle >= 360) { targetAngle -= 360; }
             //find how far to turn
             float turnAmount;
             if (targetAngle <= turnSpeed)
@@ -569,9 +844,11 @@ namespace AttackOfTheHowards
             {
                 turnAmount *= -1;
             }
-            lastKnownAngleToPlayer = targetAngle - Math.Abs(turnAmount);
+            lastAngleToPlayer = targetAngle - Math.Abs(turnAmount);
             //update rotation
-            thisHoward.transform.localRotation = Quaternion.Euler(0, thisHoward.transform.localRotation.eulerAngles.y + turnAmount, 0);
+            float oldY = thisHoward.transform.localRotation.eulerAngles.y;
+            thisHoward.transform.rotation = Quaternion.Euler(0, thisHoward.transform.localRotation.eulerAngles.y + turnAmount, 0);
+            float newY = thisHoward.transform.localRotation.eulerAngles.y;
         }
 
         private void UpdatePosition()
@@ -595,7 +872,11 @@ namespace AttackOfTheHowards
             float sinkSpeed = 0.08f;
             for(int i = 0; i < 25; i++)
             {
-                thisHoward.transform.position = new Vector3(thisHoward.transform.position.x, thisHoward.transform.position.y - sinkSpeed, thisHoward.transform.position.z);
+                try
+                {
+                    thisHoward.transform.position = new Vector3(thisHoward.transform.position.x, thisHoward.transform.position.y - sinkSpeed, thisHoward.transform.position.z);
+                }
+                catch { yield break; }
                 yield return new WaitForFixedUpdate();
             }
             MelonCoroutines.Start(SpawnOnDeath());
