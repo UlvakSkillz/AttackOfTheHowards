@@ -53,7 +53,7 @@ namespace AttackOfTheHowards
         void Start()
         {
             thisHoward = this.gameObject;
-            playerHead = PlayerManager.instance.localPlayer.Controller.gameObject.transform.GetChild(1).GetChild(0).GetChild(0).gameObject;
+            playerHead = PlayerManager.instance.localPlayer.Controller.gameObject.transform.GetChild(2).GetChild(0).GetChild(0).gameObject;
             thisHowardComponent = thisHoward.GetComponent<Howard>();
             thisDummy = thisHoward.transform.GetChild(2).gameObject;
             thisHowardAnimator = thisDummy.transform.GetChild(0).GetComponent<HowardAnimator>();
@@ -83,7 +83,7 @@ namespace AttackOfTheHowards
             }
         }
 
-        private IEnumerator RunSetup()
+        private IEnumerator<WaitForSeconds> RunSetup()
         {
             try
             {
@@ -264,7 +264,7 @@ namespace AttackOfTheHowards
             }
         }
 
-        private IEnumerator UpdateMode()
+        private IEnumerator<WaitForSeconds> UpdateMode()
         {
             while ((thisHoward != null) && (mode != 3))
             {
@@ -342,7 +342,7 @@ namespace AttackOfTheHowards
             }
         }
 
-        private IEnumerator MoveTillSeePlayer()
+        private IEnumerator<WaitForFixedUpdate> MoveTillSeePlayer()
         {
             bool dontSeePlayer = true;
             int moveLeftVsRight = (Main.random.Next(0, 2) == 0 ? -1 : 1);
@@ -374,7 +374,7 @@ namespace AttackOfTheHowards
             yield break;
         }
 
-        private IEnumerator StartAttack()
+        private IEnumerator<WaitForFixedUpdate> StartAttack()
         {
             attacking = true;
             Vector2 howardXZ = Main.V3ToV2XZ(thisHoward.transform.position);
@@ -498,7 +498,7 @@ namespace AttackOfTheHowards
 
         #region Combos
         // Summon
-        private IEnumerator CastDisc()
+        private IEnumerator<WaitForSeconds> CastDisc()
         {
             //Disc
             attackRunning = true;
@@ -519,7 +519,7 @@ namespace AttackOfTheHowards
         }
 
         // Straight
-        private IEnumerator CastDiscStraight()
+        private IEnumerator<WaitForSeconds> CastDiscStraight()
         {
             //Disc
             attackRunning = true;
@@ -547,7 +547,7 @@ namespace AttackOfTheHowards
             yield break;
         }
 
-        private IEnumerator CastBallStraight()
+        private IEnumerator<WaitForSeconds> CastBallStraight()
         {
             //Ball
             attackRunning = true;
@@ -580,7 +580,7 @@ namespace AttackOfTheHowards
             yield break;
         }
 
-        private IEnumerator CastPillarStraight()
+        private IEnumerator<WaitForSeconds> CastPillarStraight()
         {
             //Pillar
             attackRunning = true;
@@ -613,7 +613,7 @@ namespace AttackOfTheHowards
             yield break;
         }
 
-        private IEnumerator CastCubeStraight()
+        private IEnumerator<WaitForSeconds> CastCubeStraight()
         {
             //Cube
             attackRunning = true;
@@ -646,7 +646,7 @@ namespace AttackOfTheHowards
             yield break;
         }
 
-        private IEnumerator CastWallStraight()
+        private IEnumerator<WaitForSeconds> CastWallStraight()
         {
             //Wall
             attackRunning = true;
@@ -680,7 +680,7 @@ namespace AttackOfTheHowards
         }
 
         // Straight Uppercut
-        private IEnumerator CastPillarStraightUppercut()
+        private IEnumerator<WaitForSeconds> CastPillarStraightUppercut()
         {
             //Pillar
             attackRunning = true;
@@ -721,7 +721,7 @@ namespace AttackOfTheHowards
             yield break;
         }
 
-        private IEnumerator CastCubeStraightUppercut()
+        private IEnumerator<WaitForSeconds> CastCubeStraightUppercut()
         {
             //Cube
             attackRunning = true;
@@ -762,7 +762,7 @@ namespace AttackOfTheHowards
             yield break;
         }
 
-        private IEnumerator CastWallStraightUppercut()
+        private IEnumerator<WaitForSeconds> CastWallStraightUppercut()
         {
             //Wall
             attackRunning = true;
@@ -799,7 +799,7 @@ namespace AttackOfTheHowards
         }
 
         // Uppercut Straight
-        private IEnumerator CastBallUppercutStraight()
+        private IEnumerator<WaitForSeconds> CastBallUppercutStraight()
         {
             //Ball
             attackRunning = true;
@@ -844,7 +844,7 @@ namespace AttackOfTheHowards
             yield break;
         }
 
-        private IEnumerator CastPillarUppercutStraight()
+        private IEnumerator<WaitForSeconds> CastPillarUppercutStraight()
         {
             //Pillar
             attackRunning = true;
@@ -889,7 +889,7 @@ namespace AttackOfTheHowards
             yield break;
         }
 
-        private IEnumerator CastCubeUppercutStraight()
+        private IEnumerator<WaitForSeconds> CastCubeUppercutStraight()
         {
             //Cube
             attackRunning = true;
@@ -935,7 +935,7 @@ namespace AttackOfTheHowards
             yield break;
         }
 
-        private IEnumerator CastWallUppercutStraight()
+        private IEnumerator<WaitForSeconds> CastWallUppercutStraight()
         {
             //Wall
             attackRunning = true;
@@ -982,7 +982,7 @@ namespace AttackOfTheHowards
         }
 
         // Straight Uppercut Kick
-        private IEnumerator CastWallStraightUppercutKick()
+        private IEnumerator<WaitForSeconds> CastWallStraightUppercutKick()
         {
             //Wall
             attackRunning = true;
@@ -1027,7 +1027,7 @@ namespace AttackOfTheHowards
             yield break;
         }
 
-        private IEnumerator CastCubeStraightUppercutKick()
+        private IEnumerator<WaitForSeconds> CastCubeStraightUppercutKick()
         {
             //Cube
             attackRunning = true;
@@ -1072,7 +1072,7 @@ namespace AttackOfTheHowards
             yield break;
         }
 
-        private IEnumerator CastPillarStraightUppercutKick()
+        private IEnumerator<WaitForSeconds> CastPillarStraightUppercutKick()
         {
             //Pillar
             attackRunning = true;
@@ -1118,7 +1118,7 @@ namespace AttackOfTheHowards
         }
 
         // Uppercut Kick Straight
-        private IEnumerator CastWallUppercutKickStraight()
+        private IEnumerator<WaitForSeconds> CastWallUppercutKickStraight()
         {
             //Wall
             attackRunning = true;
@@ -1171,7 +1171,7 @@ namespace AttackOfTheHowards
             yield break;
         }
 
-        private IEnumerator CastCubeUppercutKickStraight()
+        private IEnumerator<WaitForSeconds> CastCubeUppercutKickStraight()
         {
             //Cube
             attackRunning = true;
@@ -1224,7 +1224,7 @@ namespace AttackOfTheHowards
             yield break;
         }
 
-        private IEnumerator CastPillarUppercutKickStraight()
+        private IEnumerator<WaitForSeconds> CastPillarUppercutKickStraight()
         {
             //Pillar
             attackRunning = true;
@@ -1279,7 +1279,7 @@ namespace AttackOfTheHowards
 
         // Uppercut Straight Kick
 
-        private IEnumerator CastWallUppercutStraightKick()
+        private IEnumerator<WaitForSeconds> CastWallUppercutStraightKick()
         {
             //Wall
             attackRunning = true;
@@ -1332,7 +1332,7 @@ namespace AttackOfTheHowards
             yield break;
         }
 
-        private IEnumerator CastCubeUppercutStraightKick()
+        private IEnumerator<WaitForSeconds> CastCubeUppercutStraightKick()
         {
             //Cube
             attackRunning = true;
@@ -1380,7 +1380,7 @@ namespace AttackOfTheHowards
             yield break;
         }
 
-        private IEnumerator CastPillarUppercutStraightKick()
+        private IEnumerator<WaitForSeconds> CastPillarUppercutStraightKick()
         {
             //Pillar
             attackRunning = true;
@@ -1430,7 +1430,7 @@ namespace AttackOfTheHowards
 
         // Kick Uppercut Straight
 
-        private IEnumerator CastWallKickUppercutStraight()
+        private IEnumerator<WaitForSeconds> CastWallKickUppercutStraight()
         {
             //Wall
             attackRunning = true;
@@ -1487,7 +1487,7 @@ namespace AttackOfTheHowards
             yield break;
         }
 
-        private IEnumerator CastCubeKickUppercutStraight()
+        private IEnumerator<WaitForSeconds> CastCubeKickUppercutStraight()
         {
             //Cube
             attackRunning = true;
@@ -1544,7 +1544,7 @@ namespace AttackOfTheHowards
             yield break;
         }
 
-        private IEnumerator CastPillarKickUppercutStraight()
+        private IEnumerator<WaitForSeconds> CastPillarKickUppercutStraight()
         {
             //Pillar
             attackRunning = true;
@@ -1603,7 +1603,7 @@ namespace AttackOfTheHowards
 
         // Kick Straight Uppercut
 
-        private IEnumerator CastWallKickStraightUppercut()
+        private IEnumerator<WaitForSeconds> CastWallKickStraightUppercut()
         {
             //Wall
             attackRunning = true;
@@ -1655,7 +1655,7 @@ namespace AttackOfTheHowards
             yield break;
         }
 
-        private IEnumerator CastCubeKickStraightUppercut()
+        private IEnumerator<WaitForSeconds> CastCubeKickStraightUppercut()
         {
             //Cube
             attackRunning = true;
@@ -1707,7 +1707,7 @@ namespace AttackOfTheHowards
             yield break;
         }
 
-        private IEnumerator CastPillarKickStraightUppercut()
+        private IEnumerator<WaitForSeconds> CastPillarKickStraightUppercut()
         {
             //Pillar
             attackRunning = true;
@@ -1760,7 +1760,7 @@ namespace AttackOfTheHowards
         }
 
         // Other
-        private IEnumerator CastPillarPillarStraightStraightUppercut()
+        private IEnumerator<WaitForSeconds> CastPillarPillarStraightStraightUppercut()
         {
             //Pillar
             attackRunning = true;
@@ -1930,7 +1930,7 @@ namespace AttackOfTheHowards
             MelonCoroutines.Start(Dying());
         }
 
-        private IEnumerator Dying()
+        private IEnumerator<WaitForFixedUpdate> Dying()
         {
             float sinkSpeed = 0.1f;
             for(int i = 0; i < 25; i++)
@@ -1946,7 +1946,7 @@ namespace AttackOfTheHowards
             yield break;
         }
 
-        private IEnumerator SpawnOnDeath()
+        private IEnumerator<WaitForFixedUpdate> SpawnOnDeath()
         {
             int respawnCount = (Main.duplicateHoward ? 2 : 1);
             int mapSize = (int)FlatLand.main.FlatLand.Settings[0].SavedValue;

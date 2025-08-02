@@ -18,7 +18,7 @@ namespace AttackOfTheHowards
     public static class BuildInfo
     {
         public const string ModName = "AttackOfTheHowards";
-        public const string ModVersion = "1.1.1";
+        public const string ModVersion = "1.2.0";
         public const string Author = "UlvakSkillz";
     }
 
@@ -189,13 +189,16 @@ namespace AttackOfTheHowards
             }
         }
 
-        private IEnumerator listenForFlatLandButton()
+        private IEnumerator<WaitForSeconds> listenForFlatLandButton()
         {
+            Log("ListenForFlatland Running");
             yield return new WaitForSeconds(1);
+            Log("ListenForFlatland waited 1 second");
             GameObject.Find("FlatLand/FlatLandButton/Button").GetComponent<InteractionButton>().onPressed.AddListener(new Action(() =>
             {
                 if (!flatLandPressed)
                 {
+                    Log("Pressed");
                     flatLandPressed = true;
                     leftFlatland = false;
                     MelonCoroutines.Start(toFlatLand());
@@ -204,37 +207,44 @@ namespace AttackOfTheHowards
             yield break;
         }
         
-        private IEnumerator toFlatLand()
+        private IEnumerator<WaitForSeconds> toFlatLand()
         {
             nextWaveCount = startingNumber;
-            yield return new WaitForSeconds(1);
+            Log("ToFlatland Running");
+            yield return new WaitForSeconds(1f);
+            Log("ToFlatland waited 1 second");
             flatLandPressed = false;
             if (enabled)
             {
+                Log("Enabled");
                 SortStacks();
                 if (!healthListenerAdded)
                 {
-                    Calls.Players.GetLocalHealthbarGameObject().GetComponent<PlayerHealth>().onHealthDepleted.AddListener(new Action(() => {
+                    Log("Adding Health Listener");
+                    Calls.Players.GetLocalHealthbarGameObject().transform.parent.GetComponent<PlayerHealth>().onHealthDepleted.AddListener(new Action(() => {
                         //this removes Howards on Player Death
                         MelonCoroutines.Start(PlayerDied(false));
                         running = false;
                     }));
                     healthListenerAdded = true;
                 }
+                Log("Spawning Starting Text");
                 MelonCoroutines.Start(StartingText());
                 for (int i = 0; i < startingNumber; i++)
                 {
                     if (leftFlatland) { break; }
+                    Log("Spawning Howard: " + i);
                     SpawnNewHoward();
-                    yield return new WaitForFixedUpdate();
+                    yield return new WaitForSeconds(0.02f);
                 }
             }
+            Log("To Flatland Done");
             yield break;
         }
 
-        private IEnumerator StartingText()
+        private IEnumerator<WaitForSeconds> StartingText()
         {
-            Transform playerHead = PlayerManager.instance.localPlayer.Controller.gameObject.transform.GetChild(1).GetChild(0).GetChild(0);
+            Transform playerHead = PlayerManager.instance.localPlayer.Controller.gameObject.transform.GetChild(2).GetChild(0).GetChild(0);
             GameObject startingText = Calls.Create.NewText();
             startingText.name = "StartingText";
             startingText.transform.parent = playerHead;
@@ -251,7 +261,7 @@ namespace AttackOfTheHowards
             yield break;
         }
 
-        private IEnumerator PlayerDied(bool restart = false)
+        private IEnumerator<WaitForSeconds> PlayerDied(bool restart = false)
         {
             if (activeHowards.Count != 0)
             {
@@ -276,7 +286,7 @@ namespace AttackOfTheHowards
                         }
                         catch { break; }
                     }
-                    yield return new WaitForFixedUpdate();
+                    yield return new WaitForSeconds(0.02f);
                 }
                 while (activeHowards.Count > 0)
                 {
@@ -333,13 +343,13 @@ namespace AttackOfTheHowards
                 waveModeActive = waveModeActiveTemp;
                 showScore = showScoreTemp;
                 if (gameOverParent != null) { GameObject.Destroy(gameOverParent); }
-                Calls.Players.GetLocalHealthbarGameObject().GetComponent<PlayerHealth>().ResetHealthBar();
+                Calls.Players.GetLocalHealthbarGameObject().GetComponent<PlayerHealth>().ForceHealthReset();
                 MelonCoroutines.Start(toFlatLand());
             }
             yield break;
         }
 
-        private IEnumerator SignLookAtPlayer(GameObject gameOverParent)
+        private IEnumerator<WaitForFixedUpdate> SignLookAtPlayer(GameObject gameOverParent)
         {
             while (gameOverParent != null)
             {
@@ -372,7 +382,9 @@ namespace AttackOfTheHowards
 
         public static void SpawnNewHoward()
         {
+            Log("Attempting Spawn");
             if ((Main.maximumHowards <= Main.activeHowards.Count) || !enabled) { return; }
+            Log("Spawning Howard");
             int mapSize = (int)FlatLand.main.FlatLand.Settings[0].SavedValue;
             float edgeLength = (((float)mapSize) / 2) - 1;
             GameObject newHoward = GameObject.Instantiate(storedHoward);
