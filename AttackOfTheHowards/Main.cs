@@ -18,7 +18,7 @@ namespace AttackOfTheHowards
     public static class BuildInfo
     {
         public const string ModName = "AttackOfTheHowards";
-        public const string ModVersion = "1.2.0";
+        public const string ModVersion = "1.3.1";
         public const string Author = "UlvakSkillz";
     }
 
@@ -191,14 +191,11 @@ namespace AttackOfTheHowards
 
         private IEnumerator<WaitForSeconds> listenForFlatLandButton()
         {
-            Log("ListenForFlatland Running");
             yield return new WaitForSeconds(1);
-            Log("ListenForFlatland waited 1 second");
             GameObject.Find("FlatLand/FlatLandButton/Button").GetComponent<InteractionButton>().onPressed.AddListener(new Action(() =>
             {
                 if (!flatLandPressed)
                 {
-                    Log("Pressed");
                     flatLandPressed = true;
                     leftFlatland = false;
                     MelonCoroutines.Start(toFlatLand());
@@ -210,17 +207,13 @@ namespace AttackOfTheHowards
         private IEnumerator<WaitForSeconds> toFlatLand()
         {
             nextWaveCount = startingNumber;
-            Log("ToFlatland Running");
             yield return new WaitForSeconds(1f);
-            Log("ToFlatland waited 1 second");
             flatLandPressed = false;
             if (enabled)
             {
-                Log("Enabled");
                 SortStacks();
                 if (!healthListenerAdded)
                 {
-                    Log("Adding Health Listener");
                     Calls.Players.GetLocalHealthbarGameObject().transform.parent.GetComponent<PlayerHealth>().onHealthDepleted.AddListener(new Action(() => {
                         //this removes Howards on Player Death
                         MelonCoroutines.Start(PlayerDied(false));
@@ -228,17 +221,14 @@ namespace AttackOfTheHowards
                     }));
                     healthListenerAdded = true;
                 }
-                Log("Spawning Starting Text");
                 MelonCoroutines.Start(StartingText());
                 for (int i = 0; i < startingNumber; i++)
                 {
                     if (leftFlatland) { break; }
-                    Log("Spawning Howard: " + i);
                     SpawnNewHoward();
                     yield return new WaitForSeconds(0.02f);
                 }
             }
-            Log("To Flatland Done");
             yield break;
         }
 
@@ -353,7 +343,7 @@ namespace AttackOfTheHowards
         {
             while (gameOverParent != null)
             {
-                gameOverParent.transform.LookAt(PlayerManager.instance.localPlayer.Controller.gameObject.transform.GetChild(1).GetChild(0).GetChild(0));
+                gameOverParent.transform.LookAt(PlayerManager.instance.localPlayer.Controller.gameObject.transform.GetChild(2).GetChild(0).GetChild(0));
                 yield return new WaitForFixedUpdate();
             }
             yield break;
@@ -362,7 +352,7 @@ namespace AttackOfTheHowards
         private void SpawnStoredHoward()
         {
             if (Main.maximumHowards <= Main.activeHowards.Count) { return; }
-            storedHoward = GameObject.Instantiate(Calls.GameObjects.Gym.Logic.HeinhouserProducts.HowardRoot.GetGameObject());
+            storedHoward = GameObject.Instantiate(Calls.GameObjects.Gym.LOGIC.Heinhouserproducts.Howardroot.GetGameObject());
             storedHoward.transform.position = flatLandOffsetCenter + new Vector3(0, -10, 0);
             storedHoward.name = "Howard";
             storedHoward.transform.localRotation = Quaternion.Euler(0, -245.1242f, 0);
@@ -382,9 +372,7 @@ namespace AttackOfTheHowards
 
         public static void SpawnNewHoward()
         {
-            Log("Attempting Spawn");
             if ((Main.maximumHowards <= Main.activeHowards.Count) || !enabled) { return; }
-            Log("Spawning Howard");
             int mapSize = (int)FlatLand.main.FlatLand.Settings[0].SavedValue;
             float edgeLength = (((float)mapSize) / 2) - 1;
             GameObject newHoward = GameObject.Instantiate(storedHoward);
