@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AttackOfTheHowards")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d48ed437558d2da050358c043c3ac35ac1b28497")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5c12a75eb11084f9f6352b997a4d4de940eabd1f")]
 [assembly: System.Reflection.AssemblyProductAttribute("AttackOfTheHowards")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AttackOfTheHowards")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

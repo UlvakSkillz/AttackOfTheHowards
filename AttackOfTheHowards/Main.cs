@@ -4,12 +4,10 @@ using Il2CppRUMBLE.Environment.Howard;
 using Il2CppRUMBLE.Interactions.InteractionBase;
 using Il2CppRUMBLE.Managers;
 using Il2CppRUMBLE.MoveSystem;
-using Il2CppRUMBLE.Players.Subsystems;
 using Il2CppTMPro;
 using MelonLoader;
-using RumbleModdingAPI;
+using RumbleModdingAPI.RMAPI;
 using RumbleModUI;
-using System.Collections;
 using UnityEngine;
 using Stack = Il2CppRUMBLE.MoveSystem.Stack;
 
@@ -18,7 +16,7 @@ namespace AttackOfTheHowards
     public static class BuildInfo
     {
         public const string ModName = "AttackOfTheHowards";
-        public const string ModVersion = "1.3.1";
+        public const string ModVersion = "1.4.0";
         public const string Author = "UlvakSkillz";
     }
 
@@ -58,9 +56,18 @@ namespace AttackOfTheHowards
         public static bool running = false;
         private bool healthListenerAdded = false;
 
-        public static void Log(string msg)
+        internal static void Log(string msg)
         {
             MelonLogger.Msg(msg);
+        }
+
+        private static bool debugging = false;
+        internal static void Debug(string msg)
+        {
+            if (debugging == true)
+            {
+                MelonLogger.Msg(msg);
+            }
         }
 
         public static Vector2 V3ToV2XZ(Vector3 v3)
@@ -100,18 +107,21 @@ namespace AttackOfTheHowards
             showScore = showScoreTemp;
             score = 0;
             healthListenerAdded = false;
+            activeHowards = new List<GameObject>();
         }
 
         public override void OnLateInitializeMelon()
         {
-            Calls.onMapInitialized += mapLoaded;
-            Calls.onMyModsGathered += checkMods;
+            Actions.onMapInitialized += mapLoaded;
+            Actions.onMyModsGathered += checkMods;
             UI.instance.UI_Initialized += UIInit;
         }
         
         private void checkMods()
         {
+            Debug("checkMods Triggered");
             flatLandFound = Calls.Mods.findOwnMod("FlatLand", "1.0.0", false);
+            Debug("FlatLand Found?: " + (flatLandFound ? "Yes" : "No"));
         }
 
         private void UIInit()
@@ -173,9 +183,9 @@ namespace AttackOfTheHowards
             }
         }
 
-        private void mapLoaded()
+        private void mapLoaded(string map)
         {
-            if (currentScene == "Gym")
+            if (map == "Gym")
             {
                 if (!initialized)
                 {
@@ -206,19 +216,23 @@ namespace AttackOfTheHowards
         
         private IEnumerator<WaitForSeconds> toFlatLand()
         {
+            Debug("To Flatland Pressed");
             nextWaveCount = startingNumber;
             yield return new WaitForSeconds(1f);
+            Debug("To Flatland Wait Done");
             flatLandPressed = false;
             if (enabled)
             {
+                Debug("Mod Enabled");
                 SortStacks();
                 if (!healthListenerAdded)
                 {
-                    Calls.Players.GetLocalHealthbarGameObject().transform.parent.GetComponent<PlayerHealth>().onHealthDepleted.AddListener(new Action(() => {
+                    PlayerManager.instance.localPlayer.Controller.PlayerHealth.onHealthDepleted.AddListener(new Action(() => {
                         //this removes Howards on Player Death
                         MelonCoroutines.Start(PlayerDied(false));
                         running = false;
                     }));
+                    Debug("Local Player Health Listener Added (on death)");
                     healthListenerAdded = true;
                 }
                 MelonCoroutines.Start(StartingText());
@@ -234,8 +248,9 @@ namespace AttackOfTheHowards
 
         private IEnumerator<WaitForSeconds> StartingText()
         {
+            Debug("Showing Starting Text");
             Transform playerHead = PlayerManager.instance.localPlayer.Controller.gameObject.transform.GetChild(2).GetChild(0).GetChild(0);
-            GameObject startingText = Calls.Create.NewText();
+            GameObject startingText = Create.NewText();
             startingText.name = "StartingText";
             startingText.transform.parent = playerHead;
             startingText.transform.localPosition = new Vector3(0, 2, 5);
@@ -248,11 +263,13 @@ namespace AttackOfTheHowards
             startingTMP.enableWordWrapping = false;
             yield return new WaitForSeconds(5);
             GameObject.Destroy(startingText);
+            Debug("Starting Text Done");
             yield break;
         }
 
         private IEnumerator<WaitForSeconds> PlayerDied(bool restart = false)
         {
+            Debug("Player Died, Rester?: " + restart);
             if (activeHowards.Count != 0)
             {
                 foreach (GameObject howard in activeHowards)
@@ -283,16 +300,18 @@ namespace AttackOfTheHowards
                     GameObject.Destroy(activeHowards[0]);
                     activeHowards.RemoveAt(0);
                 }
+                Debug("Remaining Howards Removed");
             }
             running = false;
             GameObject gameOverParent = null;
             if (showScore)
             {
+                Debug("Showing Score");
                 gameOverParent = new GameObject();
                 gameOverParent.transform.position = Vector3.zero;
                 gameOverParent.transform.localRotation = Quaternion.identity;
                 gameOverParent.name = "Attack of the Howard Score";
-                GameObject scoreText = Calls.Create.NewText();
+                GameObject scoreText = Create.NewText();
                 scoreText.name = "Score";
                 scoreText.transform.parent = gameOverParent.transform;
                 scoreText.transform.localPosition = new Vector3(0, 1, 0);
@@ -303,7 +322,7 @@ namespace AttackOfTheHowards
                 scoreTMP.alignment = TextAlignmentOptions.Center;
                 scoreTMP.color = Color.red;
                 scoreTMP.enableWordWrapping = false;
-                GameObject settingsText = Calls.Create.NewText();
+                GameObject settingsText = Create.NewText();
                 settingsText.name = "Settings";
                 settingsText.transform.parent = gameOverParent.transform;
                 settingsText.transform.localPosition = new Vector3(0, -6, 0);
@@ -324,6 +343,7 @@ namespace AttackOfTheHowards
             }
             if (restart)
             {
+                Debug("Restarting Fight");
                 duplicateHoward = duplicateHowardTemp;
                 startingNumber = startingNumberTemp;
                 maximumHowards = maximumHowardsTemp;
@@ -333,7 +353,8 @@ namespace AttackOfTheHowards
                 waveModeActive = waveModeActiveTemp;
                 showScore = showScoreTemp;
                 if (gameOverParent != null) { GameObject.Destroy(gameOverParent); }
-                Calls.Players.GetLocalHealthbarGameObject().GetComponent<PlayerHealth>().ForceHealthReset();
+                PlayerManager.instance.localPlayer.Controller.PlayerHealth.ForceHealthReset();
+                Debug("(Next Logs is toFlatLand() so duplicate logs will be seen)");
                 MelonCoroutines.Start(toFlatLand());
             }
             yield break;
@@ -343,7 +364,7 @@ namespace AttackOfTheHowards
         {
             while (gameOverParent != null)
             {
-                gameOverParent.transform.LookAt(PlayerManager.instance.localPlayer.Controller.gameObject.transform.GetChild(2).GetChild(0).GetChild(0));
+                gameOverParent.transform.LookAt(PlayerManager.instance.localPlayer.Controller.PlayerCamera.transform);
                 yield return new WaitForFixedUpdate();
             }
             yield break;
@@ -351,16 +372,16 @@ namespace AttackOfTheHowards
 
         private void SpawnStoredHoward()
         {
+            Debug("Creating Stored Howard");
             if (Main.maximumHowards <= Main.activeHowards.Count) { return; }
-            storedHoward = GameObject.Instantiate(Calls.GameObjects.Gym.LOGIC.Heinhouserproducts.Howardroot.GetGameObject());
+            storedHoward = GameObject.Instantiate(GameObjects.Gym.INTERACTABLES.Howard.GetGameObject());
             storedHoward.transform.position = flatLandOffsetCenter + new Vector3(0, -10, 0);
             storedHoward.name = "Howard";
             storedHoward.transform.localRotation = Quaternion.Euler(0, -245.1242f, 0);
-            GameObject.Destroy(storedHoward.transform.GetChild(5).gameObject); //TutorialChecklist
-            GameObject howardDummy = storedHoward.transform.GetChild(3).gameObject;
-            GameObject.Destroy(storedHoward.transform.GetChild(1).gameObject); //props
-            storedHoward.transform.GetChild(4).transform.localPosition = new Vector3(0, -100, 0); //console //cant scale zero or turn off console
-            storedHoward.transform.GetChild(4).transform.localScale = new Vector3(0.01f, 0.01f, 0.01f); //console
+            GameObject.Destroy(storedHoward.transform.GetChild(4).gameObject); //TutorialChecklist
+            GameObject howardDummy = storedHoward.transform.GetChild(2).gameObject;
+            storedHoward.transform.GetChild(3).transform.localPosition = new Vector3(0, -100, 0); //console //cant scale zero or turn off console
+            storedHoward.transform.GetChild(3).transform.localScale = new Vector3(0.01f, 0.01f, 0.01f); //console
             Howard thisHowardComponent = storedHoward.GetComponent<Howard>();
             thisHowardComponent.CurrentSelectedLogic.DodgeBehaviour = null;
             thisHowardComponent.CurrentSelectedLogic.SequenceSets.Clear();
@@ -368,10 +389,12 @@ namespace AttackOfTheHowards
             storedHoward.SetActive(false);
             storedHoward.AddComponent<HowardCombat>();
             GameObject.DontDestroyOnLoad(storedHoward);
+            Debug("Howard Stored");
         }
 
         public static void SpawnNewHoward()
         {
+            Debug("Spawning New Howard");
             if ((Main.maximumHowards <= Main.activeHowards.Count) || !enabled) { return; }
             int mapSize = (int)FlatLand.main.FlatLand.Settings[0].SavedValue;
             float edgeLength = (((float)mapSize) / 2) - 1;
